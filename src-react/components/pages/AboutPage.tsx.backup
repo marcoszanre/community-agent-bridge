@@ -1,0 +1,581 @@
+import { useEffect } from 'react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { 
+  Info, 
+  Rocket,
+  Phone,
+  Bot,
+  Volume2,
+  Video,
+  Mic,
+  Monitor,
+  BookOpen,
+  Shield,
+  Settings,
+  MessageSquare,
+  HelpCircle,
+  ExternalLink,
+  Zap,
+  FileText,
+  Hand,
+  Sparkles
+} from 'lucide-react'
+
+const features = [
+  {
+    icon: Rocket,
+    title: 'Minimal Bundle Size',
+    description: 'Built with Tauri using native webview for 3-10MB total size vs 150+ MB for Electron'
+  },
+  {
+    icon: Phone,
+    title: 'Azure Communication Services',
+    description: 'Full voice and video calling capabilities with ACS integration'
+  },
+  {
+    icon: Bot,
+    title: 'Copilot Studio AI Agent',
+    description: 'Automatically responds to questions in Teams meetings using AI'
+  },
+  {
+    icon: Volume2,
+    title: 'Text-to-Speech',
+    description: 'Azure Speech SDK integration for natural agent voice responses'
+  },
+  {
+    icon: Video,
+    title: 'Video Support',
+    description: 'Local and remote video streaming with full controls'
+  },
+  {
+    icon: Mic,
+    title: 'Audio Controls',
+    description: 'Mute/unmute and audio device management'
+  }
+]
+
+const quickStartSteps = [
+  {
+    step: 1,
+    title: 'Configure Services',
+    description: 'Go to Settings and enter your Azure Communication Services credentials (endpoint and access key)'
+  },
+  {
+    step: 2,
+    title: 'Sign In to Copilot Studio',
+    description: 'Authenticate with your Microsoft 365 account to enable AI agent features'
+  },
+  {
+    step: 3,
+    title: 'Start Conversation',
+    description: 'Click "Start Conversation" to activate the agent connection'
+  },
+  {
+    step: 4,
+    title: 'Join a Meeting',
+    description: 'Enter a Teams meeting link and join the meeting with audio/video'
+  },
+  {
+    step: 5,
+    title: 'Interact with Agent',
+    description: 'Say "Hey [Agent Name], [your question]" in the meeting to trigger AI responses'
+  }
+]
+
+const documentation = [
+  {
+    icon: Shield,
+    title: 'Security Best Practices',
+    path: 'docs/SECURITY.md',
+    description: 'Environment variable security and credential management'
+  },
+  {
+    icon: Settings,
+    title: 'Configuration Guide',
+    path: 'docs/CONFIG.md',
+    description: 'Detailed setup and configuration options'
+  },
+  {
+    icon: Zap,
+    title: 'Quick Start',
+    path: 'docs/COPILOT_QUICKSTART.md',
+    description: 'Get started with AI agent in 5 steps'
+  },
+  {
+    icon: Bot,
+    title: 'Copilot Studio Integration',
+    path: 'docs/COPILOT_STUDIO_INTEGRATION.md',
+    description: 'Full integration documentation'
+  },
+  {
+    icon: Volume2,
+    title: 'TTS Preprocessing',
+    path: 'docs/TTS_PREPROCESSING.md',
+    description: 'Text-to-Speech processing details'
+  },
+  {
+    icon: FileText,
+    title: 'Quick Reference',
+    path: 'docs/QUICK_REFERENCE.md',
+    description: 'Command and API reference'
+  }
+]
+
+const resources = [
+  {
+    title: 'Tauri Documentation',
+    url: 'https://tauri.app/',
+    description: 'Build smaller, faster desktop apps'
+  },
+  {
+    title: 'Azure Communication Services',
+    url: 'https://azure.microsoft.com/services/communication-services/',
+    description: 'Communication platform APIs'
+  },
+  {
+    title: 'Microsoft Copilot Studio',
+    url: 'https://www.microsoft.com/microsoft-copilot/microsoft-copilot-studio',
+    description: 'Build custom AI agents'
+  }
+]
+
+// Behavior patterns with detailed explanations
+const behaviorPatterns = [
+  {
+    id: 'autonomous-mixed',
+    icon: Zap,
+    name: 'Auto',
+    shortDesc: 'Responds naturally',
+    description: 'The agent responds using the same channel it was triggered from. When mentioned in voice (captions), it speaks back. When mentioned in chat, it replies in chat.',
+    voiceTrigger: 'Enabled',
+    voiceResponse: 'Speaks',
+    chatTrigger: 'Enabled',
+    chatResponse: 'Chats',
+    recommended: true
+  },
+  {
+    id: 'polite-queue-mixed',
+    icon: Hand,
+    name: 'Raise Hand',
+    shortDesc: 'Waits for acknowledgment',
+    description: 'The agent queues its response and raises its hand in Teams, waiting for acknowledgment before speaking. Great for formal meetings.',
+    voiceTrigger: 'Enabled',
+    voiceResponse: 'Queues + Hand',
+    chatTrigger: 'Enabled',
+    chatResponse: 'Chat reply',
+    recommended: false
+  },
+  {
+    id: 'supervised',
+    icon: Shield,
+    name: 'Review',
+    shortDesc: 'Requires approval',
+    description: 'The agent prepares responses but waits for manual approval before sending them. You control exactly what the agent says.',
+    voiceTrigger: 'Enabled',
+    voiceResponse: 'Requires Approval',
+    chatTrigger: 'Enabled',
+    chatResponse: 'Requires Approval',
+    recommended: false
+  }
+]
+
+export function AboutPage() {
+  const scrollToSection = useNavigationStore((state) => state.scrollToSection)
+  const clearScrollSection = useNavigationStore((state) => state.clearScrollSection)
+  
+  // Scroll to section if specified
+  useEffect(() => {
+    if (scrollToSection) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const element = document.getElementById(scrollToSection)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+        clearScrollSection()
+      }, 100)
+      return () => clearTimeout(timer)
+    }
+  }, [scrollToSection, clearScrollSection])
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Page Header */}
+      <div className="flex items-center justify-between px-8 py-5 border-b bg-background/80 backdrop-blur-sm flex-shrink-0">
+        <div className="flex items-center gap-4">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
+            <Info className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold tracking-tight">About</h1>
+            <p className="text-xs text-muted-foreground">Learn about Community Agent Bridge and how to use it</p>
+          </div>
+        </div>
+        <Badge variant="secondary" className="text-[10px]">
+          v1.0.0
+        </Badge>
+      </div>
+
+      {/* Main Content */}
+      <ScrollArea className="flex-1">
+        <div className="mx-auto w-full max-w-6xl px-8 py-6 space-y-6">
+          {/* Hero Section */}
+          <Card className="bg-gradient-to-br from-amber-50 via-yellow-50/50 to-amber-50/30 border-amber-200/60 dark:from-amber-950/20 dark:via-yellow-950/10 dark:to-amber-950/5 dark:border-amber-800/30">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 text-lg font-bold text-gray-900 shadow-lg flex-shrink-0 ring-2 ring-black/20 dark:ring-black/40">
+                  CAB
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl text-amber-500 dark:text-amber-400" style={{ fontFamily: "'Dancing Script', cursive", fontWeight: 600 }}>Community</span>
+                    <span className="text-xl font-bold text-foreground italic tracking-wider">AGENT BRIDGE</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    A minimalistic desktop client for Azure Communication Services built with Tauri for minimal bundle size. 
+                    Includes <strong>Copilot Studio integration</strong> for AI-powered agent responses in Teams meetings.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Badge variant="outline" className="text-[10px]">
+                      <Monitor className="w-3 h-3 mr-1" />
+                      Windows
+                    </Badge>
+                    <Badge variant="outline" className="text-[10px]">
+                      <Monitor className="w-3 h-3 mr-1" />
+                      macOS
+                    </Badge>
+                    <Badge variant="outline" className="text-[10px]">
+                      <Monitor className="w-3 h-3 mr-1" />
+                      Linux
+                    </Badge>
+                    <Badge variant="secondary" className="text-[10px]">
+                      MIT License
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Features */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Rocket className="w-4 h-4" />
+                Features
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Core capabilities of Community Agent Bridge
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {features.map((feature) => {
+                  const Icon = feature.icon
+                  return (
+                    <div 
+                      key={feature.title}
+                      className="flex gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted/80 transition-colors"
+                    >
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 flex-shrink-0">
+                        <Icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-medium">{feature.title}</h4>
+                        <p className="text-[11px] text-muted-foreground leading-relaxed">{feature.description}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Start Guide */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Quick Start Guide
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Get up and running in 5 easy steps
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {quickStartSteps.map((item) => (
+                  <div 
+                    key={item.step}
+                    className="flex gap-4 p-3 rounded-lg border border-border/60 hover:bg-muted/30 transition-colors"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold flex-shrink-0">
+                      {item.step}
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-medium">{item.title}</h4>
+                      <p className="text-[11px] text-muted-foreground">{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Using the AI Agent */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <MessageSquare className="w-4 h-4" />
+                Using the AI Agent
+              </CardTitle>
+              <CardDescription className="text-xs">
+                How to interact with Copilot Studio agent in meetings
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 rounded-lg bg-muted/50 space-y-3">
+                <h4 className="text-xs font-medium">Triggering the Agent</h4>
+                <p className="text-[11px] text-muted-foreground">
+                  Once connected to a meeting with the agent activated, you can invoke the AI by speaking naturally:
+                </p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-[11px] p-2 rounded bg-background border">
+                    <Bot className="w-3 h-3 text-primary" />
+                    <span>"Hey <strong>[Agent Name]</strong>, what's on the agenda today?"</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] p-2 rounded bg-background border">
+                    <Bot className="w-3 h-3 text-primary" />
+                    <span>"<strong>[Agent Name]</strong>, can you summarize the last meeting?"</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] p-2 rounded bg-background border">
+                    <Bot className="w-3 h-3 text-primary" />
+                    <span>"@<strong>[Agent Name]</strong> what are our Q3 targets?"</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="p-3 rounded-lg border border-border/60">
+                  <h4 className="text-xs font-medium flex items-center gap-2 mb-2">
+                    <HelpCircle className="w-3 h-3" />
+                    Requirements
+                  </h4>
+                  <ul className="space-y-1 text-[11px] text-muted-foreground">
+                    <li>• Teams meeting with closed captions enabled</li>
+                    <li>• Copilot Studio authentication completed</li>
+                    <li>• Agent conversation started</li>
+                    <li>• Azure Speech services configured (for TTS)</li>
+                  </ul>
+                </div>
+                <div className="p-3 rounded-lg border border-border/60">
+                  <h4 className="text-xs font-medium flex items-center gap-2 mb-2">
+                    <Settings className="w-3 h-3" />
+                    Agent Name
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Set the agent display name directly on the Agents page. 
+                    That display name is used to detect when you're addressing the AI assistant.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Behavior Patterns */}
+          <Card id="behavior-patterns">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                Agent Behavior Patterns
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Control how the agent responds to voice and chat mentions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-[11px] text-muted-foreground">
+                Behavior patterns let you customize how the AI agent responds when mentioned in meetings. 
+                Choose a pattern that matches your meeting style and formality.
+              </p>
+              
+              <div className="space-y-3">
+                {behaviorPatterns.map((pattern) => {
+                  const Icon = pattern.icon
+                  return (
+                    <div 
+                      key={pattern.id}
+                      className={`p-4 rounded-lg border transition-colors ${
+                        pattern.recommended 
+                          ? 'border-primary/40 bg-primary/5' 
+                          : 'border-border/60 hover:bg-muted/30'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`flex h-9 w-9 items-center justify-center rounded-lg flex-shrink-0 ${
+                          pattern.recommended ? 'bg-primary/20' : 'bg-muted'
+                        }`}>
+                          <Icon className={`w-4 h-4 ${pattern.recommended ? 'text-primary' : 'text-muted-foreground'}`} />
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-xs font-medium">{pattern.name}</h4>
+                            <span className="text-[10px] text-muted-foreground">({pattern.shortDesc})</span>
+                            {pattern.recommended && (
+                              <Badge variant="secondary" className="text-[9px] bg-primary/10 text-primary">
+                                <Sparkles className="w-2.5 h-2.5 mr-1" />
+                                Recommended
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground">{pattern.description}</p>
+                          <div className="flex flex-wrap gap-2 pt-1">
+                            <Badge variant="outline" className="text-[9px] gap-1">
+                              <Mic className="w-2.5 h-2.5" />
+                              Voice: {pattern.voiceResponse}
+                            </Badge>
+                            <Badge variant="outline" className="text-[9px] gap-1">
+                              <MessageSquare className="w-2.5 h-2.5" />
+                              Chat: {pattern.chatResponse}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              
+              <div className="p-3 rounded-lg bg-muted/50 mt-4">
+                <p className="text-[11px] text-muted-foreground">
+                  <strong>Tip:</strong> You can change the behavior pattern on the Home page before joining a meeting, 
+                  or adjust it during the meeting using the Agent panel.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Documentation */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                Documentation
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Detailed guides and reference material
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {documentation.map((doc) => {
+                  const Icon = doc.icon
+                  return (
+                    <div 
+                      key={doc.path}
+                      className="flex flex-col gap-2 p-3 rounded-lg border border-border/60 hover:bg-muted/30 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-primary" />
+                        <h4 className="text-xs font-medium">{doc.title}</h4>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground flex-1">{doc.description}</p>
+                      <code className="text-[9px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded w-fit">
+                        {doc.path}
+                      </code>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* External Resources */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <ExternalLink className="w-4 h-4" />
+                External Resources
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Helpful links and references
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {resources.map((resource) => (
+                  <a
+                    key={resource.url}
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col gap-1 p-3 rounded-lg border border-border/60 hover:bg-muted/50 hover:border-primary/30 transition-colors group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium group-hover:text-primary transition-colors">
+                        {resource.title}
+                      </span>
+                      <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">{resource.description}</p>
+                  </a>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Troubleshooting */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <HelpCircle className="w-4 h-4" />
+                Troubleshooting
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Common issues and solutions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="p-3 rounded-lg bg-muted/50">
+                  <h4 className="text-xs font-medium mb-1">Token Errors</h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Ensure your ACS token is valid and not expired. Tokens typically expire after 24 hours.
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-muted/50">
+                  <h4 className="text-xs font-medium mb-1">Video/Audio Issues</h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Check camera and microphone permissions in your system settings. Ensure devices aren't in use by other applications.
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-muted/50">
+                  <h4 className="text-xs font-medium mb-1">Agent Not Responding</h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Verify that Copilot Studio authentication is complete and conversation is started. Check that closed captions are enabled in Teams.
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-muted/50">
+                  <h4 className="text-xs font-medium mb-1">CSP Errors</h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Content Security Policy errors may occur in development. These are typically safe to ignore during development.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Footer */}
+          <div className="text-center py-4 border-t border-border/60">
+            <p className="text-[11px] text-muted-foreground">
+              Teams Agent Bridge • MIT License • Built with Tauri + React
+            </p>
+          </div>
+        </div>
+      </ScrollArea>
+    </div>
+  )
+}
