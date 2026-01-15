@@ -5,7 +5,12 @@
 A minimalistic desktop client for Azure Communication Services built with Tauri, React, and TypeScript. Enables AI-powered agent responses in Teams meetings through integration with Microsoft Copilot Studio and Azure AI Foundry.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://www.youtube.com/watch?v=ErQ2IstCl2E)
+
+## 🎬 Watch the Demo
+
+[![YouTube Demo](https://img.shields.io/badge/▶_Watch_Demo-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=ErQ2IstCl2E)
+
+> **See Community Agent Bridge in action!** Watch how AI agents join Teams meetings and respond to questions in real-time.
 
 ---
 
