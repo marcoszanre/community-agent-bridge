@@ -14,6 +14,14 @@ A minimalistic desktop client for Azure Communication Services built with Tauri,
 
 ---
 
+## 📥 Download
+
+[![Download](https://img.shields.io/badge/Download-Windows_x64-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/marcoszanre/community-agent-bridge/releases/latest)
+
+> Or [build from source](#development) if you prefer.
+
+---
+
 ## Table of Contents
 
 - [Overview](#overview)
